@@ -1,0 +1,2526 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>הניסוי הראשון של יאיר</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    @keyframes mission-complete {
+      0%,
+      100% {
+        box-shadow: 0 0 0 rgba(103, 183, 220, 0);
+      }
+
+      45% {
+        box-shadow: 0 0 24px rgba(103, 183, 220, 0.26);
+        border-color: rgba(35, 100, 210, 0.34);
+        background: rgba(255, 255, 255, 0.94);
+      }
+    }
+
+    @keyframes mission-complete {
+      0%,
+      100% {
+        box-shadow: 0 0 0 rgba(103, 183, 220, 0);
+      }
+
+      45% {
+        box-shadow: 0 0 24px rgba(103, 183, 220, 0.26);
+        border-color: rgba(35, 100, 210, 0.34);
+        background: rgba(255, 255, 255, 0.94);
+      }
+    }
+
+    @keyframes button-attention {
+      0%,
+      100% {
+        box-shadow: 0 8px 18px rgba(35, 100, 210, 0.22);
+      }
+
+      45% {
+        box-shadow: 0 10px 28px rgba(35, 100, 210, 0.46), 0 0 22px rgba(103, 183, 220, 0.34);
+      }
+    }
+
+    @keyframes reset-wiggle {
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-4px);
+      }
+
+      55% {
+        transform: translateX(4px);
+      }
+    }
+
+    @keyframes fake-button-in {
+      0% {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+
+      14%,
+      82% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+    }
+
+    @keyframes button-attention {
+      0%,
+      100% {
+        box-shadow: 0 8px 18px rgba(35, 100, 210, 0.22);
+      }
+
+      45% {
+        box-shadow: 0 10px 28px rgba(35, 100, 210, 0.46), 0 0 22px rgba(103, 183, 220, 0.34);
+      }
+    }
+
+    @keyframes reset-wiggle {
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-4px);
+      }
+
+      55% {
+        transform: translateX(4px);
+      }
+    }
+
+    @keyframes fake-button-in {
+      0% {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+
+      14%,
+      82% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+    }
+
+    @keyframes message-emphasis {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      45% {
+        transform: scale(1.05);
+        color: #8a4d00;
+      }
+    }
+
+    @keyframes count-wiggle {
+      0%,
+      100% {
+        transform: rotate(0deg) scale(1);
+      }
+
+      20% {
+        transform: rotate(-5deg) scale(1.08);
+      }
+
+      45% {
+        transform: rotate(4deg) scale(1.04);
+      }
+
+      70% {
+        transform: rotate(-2deg) scale(1.02);
+      }
+    }
+
+    @keyframes button-dodge {
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      35% {
+        transform: translateX(-34px);
+      }
+
+      70% {
+        transform: translateX(22px);
+      }
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      --world-bg:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8), transparent 32%),
+        linear-gradient(135deg, #f6f9ff 0%, #f7f3ff 45%, #fff7f9 100%);
+      --bubble-glow-boost: 1;
+      --bubble-speed-boost: 1;
+      background: #f5f7fb;
+      color: #172033;
+      overflow: hidden;
+      transition: background 800ms ease;
+    }
+
+    .bubble-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: var(--world-bg);
+      transition: background 800ms ease, filter 800ms ease;
+    }
+
+    body.world-gold {
+      --world-bg:
+        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.75), transparent 30%),
+        linear-gradient(135deg, #fff7dd 0%, #ffe6d8 42%, #fff0bc 100%);
+      --bubble-glow-boost: 1.2;
+    }
+
+    body.world-neon {
+      --world-bg:
+        radial-gradient(circle at 18% 22%, rgba(133, 191, 255, 0.18), transparent 26%),
+        radial-gradient(circle at 76% 16%, rgba(208, 127, 255, 0.16), transparent 24%),
+        radial-gradient(circle at 38% 70%, rgba(255, 255, 255, 0.08), transparent 2px),
+        linear-gradient(135deg, #111827 0%, #1c2452 48%, #3c1f58 100%);
+      --bubble-glow-boost: 1.35;
+    }
+
+    body.world-depth {
+      --world-bg:
+        radial-gradient(circle at 28% 18%, rgba(111, 231, 222, 0.18), transparent 32%),
+        radial-gradient(circle at 70% 78%, rgba(86, 168, 255, 0.12), transparent 30%),
+        linear-gradient(135deg, #0f3d55 0%, #14747f 48%, #dff8f4 100%);
+      --bubble-glow-boost: 1.3;
+    }
+
+    body.world-system {
+      --world-bg:
+        radial-gradient(circle at 22% 18%, rgba(240, 93, 120, 0.16), transparent 28%),
+        radial-gradient(circle at 80% 70%, rgba(88, 150, 255, 0.18), transparent 28%),
+        linear-gradient(135deg, #17172b 0%, #252457 50%, #4a1f3c 100%);
+      --bubble-glow-boost: 1.45;
+    }
+
+    body.world-system .card {
+      box-shadow: 0 18px 48px rgba(68, 87, 202, 0.24), 0 0 32px rgba(255, 255, 255, 0.1);
+    }
+
+    body.world-system .primary {
+      box-shadow: 0 10px 24px rgba(35, 100, 210, 0.34), 0 0 18px rgba(103, 183, 220, 0.28);
+    }
+
+    body.gold-rush .bubble-canvas {
+      filter: saturate(1.08) brightness(1.03);
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: min(90vw, 340px);
+      padding: 28px;
+      text-align: center;
+      background: #ffffff;
+      border: 1px solid #e5e9f2;
+      border-radius: 8px;
+      box-shadow: 0 16px 40px rgba(23, 32, 51, 0.08);
+      transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .card.excited {
+      background: #fff7dc;
+      border-color: #f4c84d;
+      box-shadow: 0 18px 44px rgba(199, 137, 18, 0.18);
+    }
+
+    .card.legendary {
+      background: linear-gradient(135deg, #101827, #273b74 48%, #ffe08a);
+      border-color: #ffe08a;
+      color: #ffffff;
+      box-shadow: 0 24px 70px rgba(35, 100, 210, 0.38);
+      animation: legendary-pop 700ms ease;
+    }
+
+    .card.legendary p {
+      color: #dfe8ff;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: 1.55rem;
+      line-height: 1.25;
+    }
+
+    p {
+      margin: 0 0 18px;
+      color: #566174;
+    }
+
+    .count {
+      margin: 0 0 22px;
+      font-size: 3rem;
+      font-weight: 700;
+      transition: transform 120ms ease;
+    }
+
+    .count.pop {
+      animation: count-pop 260ms ease;
+    }
+
+    .count.strong-pop {
+      animation: count-strong-pop 360ms ease;
+    }
+
+    .count.celebrate-pop {
+      animation: count-celebrate-pop 520ms ease;
+    }
+
+    .count.wiggle {
+      animation: count-wiggle 760ms ease;
+    }
+
+    .message {
+      min-height: 24px;
+      margin: -8px 0 20px;
+      color: #a15c00;
+      font-weight: 600;
+    }
+
+    .card.legendary .message {
+      color: #ffe08a;
+      font-size: 1.05rem;
+      line-height: 1.45;
+    }
+
+    .message.flash {
+      animation: message-flash 420ms ease;
+    }
+
+    .message.emphasis {
+      animation: message-emphasis 700ms ease;
+    }
+
+    .message.emphasis {
+      animation: message-emphasis 700ms ease;
+    }
+
+    .addiction-meter {
+      margin: 0 0 22px;
+      padding: 12px 14px;
+      border: 1px solid rgba(205, 213, 225, 0.75);
+      border-radius: 8px;
+      background: rgba(248, 250, 253, 0.82);
+      text-align: right;
+      transition: box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .addiction-meter.glow {
+      animation: meter-glow 620ms ease;
+    }
+
+    .addiction-label {
+      margin-bottom: 8px;
+      color: #334155;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #dfe6f0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2364d2, #67b7dc);
+      transition: width 220ms ease;
+    }
+
+    .progress-note {
+      margin-top: 7px;
+      color: #64748b;
+      font-size: 0.78rem;
+    }
+
+    .card.legendary .addiction-meter {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 224, 138, 0.52);
+    }
+
+    .card.legendary .addiction-label,
+    .card.legendary .progress-note {
+      color: #f8fafc;
+    }
+
+    .mission-panel {
+      margin: -8px 0 20px;
+      padding: 11px 13px;
+      border: 1px solid rgba(205, 213, 225, 0.68);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.7);
+      text-align: right;
+      transition: box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .mission-panel.complete {
+      animation: mission-complete 760ms ease;
+    }
+
+    .mission-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      color: #334155;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .mission-text {
+      margin-bottom: 8px;
+      color: #172033;
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .mission-progress-track {
+      height: 6px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e6ecf4;
+    }
+
+    .mission-progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #67b7dc, #2364d2);
+      transition: width 200ms ease;
+    }
+
+    .mission-done-count {
+      margin-top: 6px;
+      color: #64748b;
+      font-size: 0.74rem;
+    }
+
+    .card.legendary .mission-panel {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 224, 138, 0.42);
+    }
+
+    .card.legendary .mission-top,
+    .card.legendary .mission-text,
+    .card.legendary .mission-done-count {
+      color: #f8fafc;
+    }
+
+    .mission-panel {
+      margin: -8px 0 20px;
+      padding: 11px 13px;
+      border: 1px solid rgba(205, 213, 225, 0.68);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.7);
+      text-align: right;
+      transition: box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .mission-panel.complete {
+      animation: mission-complete 760ms ease;
+    }
+
+    .mission-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      color: #334155;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .mission-text {
+      margin-bottom: 8px;
+      color: #172033;
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .mission-progress-track {
+      height: 6px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e6ecf4;
+    }
+
+    .mission-progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #67b7dc, #2364d2);
+      transition: width 200ms ease;
+    }
+
+    .mission-done-count {
+      margin-top: 6px;
+      color: #64748b;
+      font-size: 0.74rem;
+    }
+
+    .card.legendary .mission-panel {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 224, 138, 0.42);
+    }
+
+    .card.legendary .mission-top,
+    .card.legendary .mission-text,
+    .card.legendary .mission-done-count {
+      color: #f8fafc;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 16px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary {
+      position: relative;
+      overflow: hidden;
+      background: #2364d2;
+      color: #ffffff;
+      box-shadow: 0 8px 18px rgba(35, 100, 210, 0.22);
+    }
+
+    .primary:active {
+      transform: translateY(1px) scale(0.97);
+      box-shadow: 0 4px 10px rgba(35, 100, 210, 0.2);
+    }
+
+    .primary.dodge {
+      animation: button-dodge 760ms ease;
+    }
+
+    .primary.evading {
+      transform: translate(var(--evade-x, 0), var(--evade-y, 0));
+    }
+
+    .primary.attention-glow {
+      animation: button-attention 2000ms ease;
+    }
+
+    .primary.attention-glow {
+      animation: button-attention 2000ms ease;
+    }
+
+    .ripple {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.5);
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0);
+      animation: ripple 420ms ease-out;
+    }
+
+    .secondary {
+      background: #edf1f7;
+      color: #172033;
+    }
+
+    .secondary.wiggle {
+      animation: reset-wiggle 650ms ease;
+    }
+
+    .fake-button {
+      padding: 9px 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.75);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.86);
+      color: #64748b;
+      font-size: 0.84rem;
+      animation: fake-button-in 2500ms ease forwards;
+    }
+
+    .secondary.wiggle {
+      animation: reset-wiggle 650ms ease;
+    }
+
+    .fake-button {
+      padding: 9px 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.75);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.86);
+      color: #64748b;
+      font-size: 0.84rem;
+      animation: fake-button-in 2500ms ease forwards;
+    }
+
+    .sound-toggle {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(237, 241, 247, 0.82);
+      color: #172033;
+      border: 1px solid rgba(205, 213, 225, 0.65);
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .sound-toggle:hover {
+      background: #e3e9f2;
+    }
+
+    .toast-layer,
+    .float-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: max(24px, 5vh);
+      max-width: min(88vw, 420px);
+      padding: 11px 14px;
+      border: 1px solid rgba(205, 213, 225, 0.78);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.86);
+      color: #172033;
+      box-shadow: 0 14px 36px rgba(23, 32, 51, 0.12);
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.45;
+      text-align: center;
+      transform: translate(-50%, 14px);
+      animation: toast-rise var(--toast-duration, 2400ms) ease forwards;
+      backdrop-filter: blur(10px);
+    }
+
+    .floating-text {
+      position: absolute;
+      color: #b77900;
+      font-weight: 800;
+      text-shadow: 0 2px 12px rgba(255, 255, 255, 0.85);
+      animation: float-up 900ms ease forwards;
+    }
+
+    .floating-text.soft {
+      color: #2364d2;
+      font-size: 0.88rem;
+    }
+
+    .floating-text.gold {
+      color: #c88300;
+      font-size: 1.1rem;
+    }
+
+    .combo-badge {
+      position: fixed;
+      z-index: 3;
+      pointer-events: none;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(103, 183, 220, 0.42);
+      color: #2364d2;
+      box-shadow: 0 10px 26px rgba(35, 100, 210, 0.16);
+      font-size: 0.82rem;
+      font-weight: 800;
+      opacity: 0;
+      transform: translate(-50%, 8px);
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .combo-badge.visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @keyframes message-flash {
+      0% {
+        transform: scale(0.96);
+        opacity: 0.35;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes message-emphasis {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      45% {
+        transform: scale(1.05);
+        color: #8a4d00;
+      }
+    }
+
+    @keyframes count-pop {
+      0% {
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(35, 100, 210, 0);
+      }
+
+      45% {
+        transform: scale(1.16);
+        text-shadow: 0 0 18px rgba(35, 100, 210, 0.22);
+      }
+
+      100% {
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(35, 100, 210, 0);
+      }
+    }
+
+    @keyframes count-strong-pop {
+      0%,
+      100% {
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(199, 131, 0, 0);
+      }
+
+      45% {
+        transform: scale(1.24);
+        text-shadow: 0 0 24px rgba(199, 131, 0, 0.34);
+      }
+    }
+
+    @keyframes count-celebrate-pop {
+      0%,
+      100% {
+        transform: scale(1) rotate(0deg);
+        text-shadow: 0 0 0 rgba(35, 100, 210, 0);
+      }
+
+      38% {
+        transform: scale(1.28) rotate(-2deg);
+        text-shadow: 0 0 28px rgba(35, 100, 210, 0.36);
+      }
+
+      68% {
+        transform: scale(1.08) rotate(1deg);
+      }
+    }
+
+    @keyframes ripple {
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(16);
+      }
+    }
+
+    @keyframes meter-glow {
+      0% {
+        box-shadow: 0 0 0 rgba(35, 100, 210, 0);
+      }
+
+      45% {
+        box-shadow: 0 0 24px rgba(35, 100, 210, 0.24);
+        border-color: rgba(35, 100, 210, 0.42);
+        background: rgba(255, 255, 255, 0.95);
+      }
+
+      100% {
+        box-shadow: 0 0 0 rgba(35, 100, 210, 0);
+      }
+    }
+
+    @keyframes legendary-pop {
+      0% {
+        transform: scale(0.92) rotate(-1deg);
+      }
+
+      60% {
+        transform: scale(1.04) rotate(1deg);
+      }
+
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes toast-rise {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 14px);
+      }
+
+      14%,
+      82% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -8px);
+      }
+    }
+
+    @keyframes float-up {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 0) scale(0.92);
+      }
+
+      18% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -34px) scale(1.08);
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas class="bubble-canvas" id="bubbleCanvas" aria-hidden="true"></canvas>
+  <div class="toast-layer" id="toastLayer" aria-live="polite"></div>
+  <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+  <div class="combo-badge" id="comboBadge">Combo x10</div>
+  <main class="card" id="card">
+    <h1>הניסוי הראשון של יאיר</h1>
+    <p>כמה פעמים לחצת?</p>
+    <div class="count" id="count">0</div>
+    <div class="message" id="message" aria-live="polite"></div>
+    <section class="addiction-meter" id="addictionMeter" aria-live="polite">
+      <div class="addiction-label" id="addictionLabel">דרגת התמכרות: רק בודק מה זה עושה</div>
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-note" id="progressNote">עוד 20 לחיצות לשלב הבא</div>
+    </section>
+    <section class="mission-panel" id="missionPanel" aria-live="polite">
+      <div class="mission-top">
+        <span>משימה נוכחית</span>
+        <span id="missionProgressText">0/15</span>
+      </div>
+      <div class="mission-text" id="missionText">לחץ עוד 15 פעמים</div>
+      <div class="mission-progress-track" aria-hidden="true">
+        <div class="mission-progress-fill" id="missionProgressFill"></div>
+      </div>
+      <div class="mission-done-count" id="missionDoneCount">משימות הושלמו: 0</div>
+    </section>
+    <div class="actions">
+      <button class="primary" id="clickButton" type="button">לחץ כאן</button>
+      <button class="secondary" id="resetButton" type="button">איפוס</button>
+      <button class="sound-toggle" id="soundToggleButton" type="button" aria-label="השתק סאונד">🔊</button>
+    </div>
+  </main>
+
+  <script>
+    const bubbleCanvas = document.getElementById("bubbleCanvas");
+    const toastLayer = document.getElementById("toastLayer");
+    const floatLayer = document.getElementById("floatLayer");
+    const comboBadge = document.getElementById("comboBadge");
+    const card = document.getElementById("card");
+    const titleElement = card.querySelector("h1");
+    const countElement = document.getElementById("count");
+    const messageElement = document.getElementById("message");
+    const addictionMeter = document.getElementById("addictionMeter");
+    const addictionLabel = document.getElementById("addictionLabel");
+    const progressFill = document.getElementById("progressFill");
+    const progressNote = document.getElementById("progressNote");
+    const missionPanel = document.getElementById("missionPanel");
+    const missionText = document.getElementById("missionText");
+    const missionProgressText = document.getElementById("missionProgressText");
+    const missionProgressFill = document.getElementById("missionProgressFill");
+    const missionDoneCount = document.getElementById("missionDoneCount");
+    const clickButton = document.getElementById("clickButton");
+    const resetButton = document.getElementById("resetButton");
+    const soundToggleButton = document.getElementById("soundToggleButton");
+
+    let count = 0;
+    let currentMessage = "";
+    let lastBoostMessage = "";
+    let currentStageIndex = 0;
+    let currentWorldIndex = 0;
+    let lastQuestionEvent = -1;
+    const seenWorlds = new Set([0]);
+    const originalTitle = titleElement.textContent;
+    const originalClickText = clickButton.textContent;
+    let activeMission = null;
+    let completedMissions = 0;
+    let lastMissionId = "";
+    let lastMissionToast = -1;
+    let missionSwitchTimer = null;
+    let nextRandomEventAt = 0;
+    let temporaryEventActiveUntil = 0;
+    let pendingRandomEventTimer = null;
+    let preferredSpecialType = null;
+    let currentToast = null;
+    let progressNoteVariantIndex = 0;
+    let lastProgressNoteRefreshCount = -1;
+    let goldRushActive = false;
+    let goldRushToastShown = false;
+    let buttonEvadeActive = false;
+    let buttonEvadeTimer = null;
+    let buttonEvadeInterval = null;
+    let streakTimer = null;
+    let streakActive = false;
+    let streakTurboShown = false;
+    const streakClicks = [];
+    let audioContext = null;
+    let masterGain = null;
+    let lastClickSoundAt = 0;
+    let soundMuted = readSoundPreference();
+
+    const addictionStages = [
+      {
+        name: "רק בודק מה זה עושה",
+        min: 0,
+        next: 20,
+        messages: []
+      },
+      {
+        name: "סקרן באופן מחשיד",
+        min: 20,
+        next: 80,
+        messages: [
+          "יואו כמה שאתה מכור!",
+          "רגע, אתה לוחץ או בודק אם יש תחתית לדבר הזה?",
+          "הכפתור ביקש הפסקה. הבקשה נדחתה.",
+          "טוב, וידאנו שהכפתור עובד. למה אתה עדיין פה?",
+          "זה היה אמור להיות ניסוי של שתי דקות, אבל מי סופר.",
+          "הכפתור שם לב שחזרת. הוא משתדל לא להתלהב.",
+          "לחיצה נאה. לא מחייבת. עדיין.",
+          "ברוכים הבאים לשלב שבו אתה טוען שזה רק כדי לבדוק את הסאונד.",
+          "הכול בשליטה. חוץ מהאצבע, כנראה."
+        ]
+      },
+      {
+        name: "מחויב רגשית",
+        min: 80,
+        next: 180,
+        messages: [
+          "מה תגיד לילדים שלך? שעצרת עכשיו?",
+          "עוד 20? ברור. אנחנו כבר עמוק בסיפור הזה.",
+          "מדענים עדיין מנסים להסביר את רמת המחויבות הזו.",
+          "המספר עולה, הכבוד שלך איתו.",
+          "אמרת עוד לחיצה אחת לפני בערך חמישים לחיצות.",
+          "הכפתור כבר מזהה אותך לפי טביעת האצבע.",
+          "חבל שאין קורות חיים לתחום הזה. היית מתקבל מיד.",
+          "אנחנו לא אומרים שיש קשר רגשי, אבל הוא בהחלט נבנה.",
+          "המונה כבר הפסיק לשאול שאלות.",
+          "הצליל הזה הפך אצלך למערכת תגמול אישית.",
+          "אתה עדיין יכול לפרוש בכבוד. כלומר, תיאורטית."
+        ]
+      },
+      {
+        name: "במערכת יחסים עם הכפתור",
+        min: 180,
+        next: 320,
+        messages: [
+          "אם תעצור עכשיו, תזרוק את כל מפעל חייך לפח.",
+          "הכפתור הזה כבר שוקל לקרוא לך אבא.",
+          "יאיר, זה כבר לא ניסוי. זו דרך חיים.",
+          "הכפתור עדכן סטטוס: זה מסובך.",
+          "אין הרבה אנשים שהגיעו לכאן. בעיקר כי אין הרבה סיבות.",
+          "מזל שאין לכפתור חוזה שכירות, כי אתה כבר גר עליו.",
+          "בשלב הזה זו פחות לחיצה ויותר טקס.",
+          "מישהו צריך לספר לאגודל שלך שמגיע לו ועד עובדים.",
+          "לא שופט. רק מתעד את האירוע ההיסטורי הזה."
+        ]
+      },
+      {
+        name: "מחלקת תפעול לחיצות",
+        min: 320,
+        next: 500,
+        messages: [
+          "האגודל שלך עובד שעות נוספות.",
+          "בשלב הזה הכפתור לוחץ עליך בחזרה.",
+          "איפשהו בעולם יש כפתור שמקנא בכפתור הזה.",
+          "זה התחיל כניסוי קטן ונגמר בקריירה.",
+          "המערכת שקלה להציג עזרה. במקום זה היא ביקשה עוד לחיצה.",
+          "יש מונומנטים שנבנו בפחות התמדה.",
+          "הכפתור פתח תיקייה בשם: יאיר - לקוח אסטרטגי.",
+          "במקום שבו אחרים רואים כפתור, אתה רואה ייעוד.",
+          "התחלנו ב-HTML. איכשהו הגענו למסע נפשי.",
+          "הבועות פה לקישוט. הכוכב האמיתי הוא חוסר היכולת לעצור."
+        ]
+      },
+      {
+        name: "אין דרך חזרה",
+        min: 500,
+        next: 800,
+        messages: [
+          "אתה כבר לא סופר לחיצות. אתה בונה מורשת.",
+          "הכפתור מרגיש מוערך. אולי אפילו יותר מדי.",
+          "אין לי מושג למה זה כל כך מספק, אבל זה עובד.",
+          "חצי אלף לחיצות. זו כבר לא טעות, זו עמדה עקרונית.",
+          "המספר אינו עולה יותר. הוא מטפס בסולם הדרגות.",
+          "הכפתור שלח לך הודעה: 'אני צריך מרחב'. לחצת עליה.",
+          "כל לחיצה נוספת היא טיעון נגד הרצון החופשי.",
+          "האגודל שלך רשאי להוסיף את זה ללינקדאין.",
+          "יום אחד תספר שנכנסת רק לבדוק אם הסאונד עובד."
+        ]
+      },
+      {
+        name: "ישות על-אנושית של לחיצה",
+        min: 800,
+        next: null,
+        messages: [
+          "ברכות: הפכת ממשתמש למערכת ההפעלה של הכפתור.",
+          "הכפתור כבר לא מגיב ללחיצה. הוא מגיב לנוכחות שלך.",
+          "ארכיאולוגים בעתיד ימצאו את המונה הזה ולא יבינו.",
+          "בשלב הזה אפילו כפתור האיפוס מפחד ממך.",
+          "אין יעד הבא. יש רק אתה, הכפתור והאמת.",
+          "האתר תוכנן לספור לחיצות, לא לתעד את קריסת מושג הזמן."
+        ]
+      }
+    ];
+    const usedMessagesByStage = new Map();
+    const worlds = [
+      {
+        name: "רק התחלת",
+        min: 0,
+        className: "",
+        intro: ""
+      },
+      {
+        name: "שעת הזהב",
+        min: 100,
+        className: "world-gold",
+        intro: "עולם חדש נפתח: שעת הזהב. איכשהו עדיין המשכת."
+      },
+      {
+        name: "ניאון בחלל",
+        min: 200,
+        className: "world-neon",
+        intro: "עולם חדש נפתח: ניאון בחלל. איבדנו קשר עם ההיגיון."
+      },
+      {
+        name: "עומק הבועה",
+        min: 300,
+        className: "world-depth",
+        intro: "עולם חדש נפתח: עומק הבועה. אין יותר יבשה, יש רק לחיצות."
+      },
+      {
+        name: "הכפתור השתלט על המערכת",
+        min: 400,
+        className: "world-system",
+        intro: "עולם חדש נפתח: הכפתור השתלט על המערכת. בשלב הזה אנחנו רק מתעדים."
+      }
+    ];
+
+    function getCurrentWorldIndex() {
+      for (let index = worlds.length - 1; index >= 0; index -= 1) {
+        if (count >= worlds[index].min) {
+          return index;
+        }
+      }
+
+      return 0;
+    }
+
+    function showToast(text, duration = 4000) {
+      if (currentToast) {
+        currentToast.remove();
+      }
+
+      const toast = document.createElement("div");
+
+      toast.className = "toast";
+      toast.textContent = text;
+      toast.style.setProperty("--toast-duration", `${duration}ms`);
+      toastLayer.appendChild(toast);
+      currentToast = toast;
+      toast.addEventListener("animationend", () => {
+        if (currentToast === toast) {
+          currentToast = null;
+        }
+
+        toast.remove();
+      });
+    }
+
+    function showFloatingText(text, x, y, variant = "") {
+      const floatingText = document.createElement("div");
+
+      floatingText.className = `floating-text ${variant}`.trim();
+      floatingText.textContent = text;
+      floatingText.style.left = `${x}px`;
+      floatingText.style.top = `${y}px`;
+      floatLayer.appendChild(floatingText);
+      floatingText.addEventListener("animationend", () => {
+        floatingText.remove();
+      });
+    }
+
+    function updateWorld() {
+      const nextWorldIndex = getCurrentWorldIndex();
+
+      if (nextWorldIndex === currentWorldIndex) {
+        return false;
+      }
+
+      worlds.forEach((world) => {
+        if (world.className) {
+          document.body.classList.remove(world.className);
+        }
+      });
+
+      currentWorldIndex = nextWorldIndex;
+      const world = worlds[currentWorldIndex];
+
+      if (world.className) {
+        document.body.classList.add(world.className);
+      }
+
+      if (!seenWorlds.has(currentWorldIndex) && world.intro) {
+        seenWorlds.add(currentWorldIndex);
+        showToast(world.intro, 5500);
+      }
+
+      return true;
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(randomBetween(min, max + 1));
+    }
+
+    function scheduleNextRandomEvent() {
+      nextRandomEventAt = count + randomInt(completedMissions === 0 ? 30 : 30, completedMissions === 0 ? 55 : 70);
+    }
+
+    function getNextStageDistance() {
+      const stage = addictionStages[currentStageIndex];
+
+      return stage.next === null ? Infinity : Math.max(0, stage.next - count);
+    }
+
+    function getNextWorldDistance() {
+      const nextWorld = worlds.find((world) => world.min > count);
+
+      return nextWorld ? nextWorld.min - count : Infinity;
+    }
+
+    const missionSuccessMessages = [
+      "יפה. הפכת פעולה חסרת משמעות להישג מדיד.",
+      "המשימה הושלמה. איש לא ביקש, אבל כולנו גאים.",
+      "וי קטן ברשימה הגדולה של החלטות מפוקפקות.",
+      "מדהים מה אפשר להשיג כשלא שואלים למה.",
+      "המערכת רשמה הישג. ההיסטוריה תחליט איך להתייחס לזה.",
+      "כל הכבוד. הכפתור מרגיש שהוא חלק ממשהו גדול.",
+      "בוצע בהצלחה. הקריירה שלך בתחום מתקדמת יפה.",
+      "עוד משימה מאחוריך. משום מה זה באמת מספק.",
+      "יפה מאוד. אפילו הבועות נראות קצת מופתעות.",
+      "הישג נפתח: השקעת מאמץ במקום שלא דרש אותו.",
+      "משימה הושלמה. יש לך כישרון מדאיג לזה.",
+      "מקצועי. מיותר לחלוטין, אבל מקצועי.",
+      "הכפתור ראה הכול. הוא מעריך את המחויבות.",
+      "ברכות. הרווחת את הזכות לקבל עוד משימה.",
+      "זה לא היה מבחן, ובכל זאת ניצחת."
+    ];
+
+    function pickMissionToast() {
+      let index = Math.floor(Math.random() * missionSuccessMessages.length);
+
+      if (missionSuccessMessages.length > 1) {
+        while (index === lastMissionToast) {
+          index = Math.floor(Math.random() * missionSuccessMessages.length);
+        }
+      }
+
+      lastMissionToast = index;
+      return missionSuccessMessages[index];
+    }
+
+    const missionTextVariants = {
+      clicks: [
+        (target) => `עוד ${target} לחיצות. אל תשאל למה.`,
+        (target) => `${target} לחיצות קטנות, החלטה אחת גדולה.`,
+        (target) => `לחץ עוד ${target}. הכפתור כבר מצפה לזה.`,
+        (target) => `${target} לחיצות להמשך המסע המפוקפק.`
+      ],
+      "pop-any-3": ["פוצץ 3 בועות. הן נראו רגועות מדי.", "בועות על הכוונת: פוצץ 3.", "3 בועות פחות בעולם. תתחיל."],
+      "pop-any-5": ["פוצץ 5 בועות. בשם המדע, כנראה.", "מבצע ניקיון: 5 בועות.", "5 בועות מחכות לסוף דרמטי."],
+      "pop-purple-3": ["ציד סגול: פוצץ 3 בועות סגלגלות", "3 סגולות. הן יודעות מה עשו.", "מצא 3 סגלגלות ותן להן רגע אחרון."],
+      "pop-blue-3": ["ציד כחול: פוצץ 3 בועות כחלחלות", "3 כחולות על הכוונת.", "כחול זה יפה. פוצץ 3 בכל זאת."],
+      "pop-pink-3": ["ציד ורוד: פוצץ 3 בועות ורדרדות", "3 ורדרדות. בעדינות, אבל כן.", "פוצץ 3 ורודות לפני שהן נהיות בטוחות מדי."],
+      "pop-large-1": ["פוצץ בועה גדולה. היא נראית בטוחה מדי.", "בועה גדולה אחת. תוריד לה את הביטחון.", "מצא גדולה אחת וסיים את הדיון."],
+      "pop-large-2": ["שתי בועות גדולות. זה כבר כמעט ספורט.", "פוצץ 2 גדולות. הן לקחו יותר מדי מקום.", "2 גדולות, שני רגעים של סיפוק."],
+      "gold-1": ["מצא את הזהב: תפוס בועת +5", "בועת זהב אחת. אל תמצמץ.", "תפוס +5 מוזהב לפני שהוא מתחרט."],
+      "question-1": ["מצא את בועת המסתורין. בטוח שזה רעיון טוב.", "פוצץ בועת ?. מה כבר יכול לקרות.", "בועת שאלה אחת. תשובות לא מובטחות."],
+      "next-stage": ["הגע לדרגה הבאה. הכפתור רוצה לראות לאן זה הולך.", "פתח דרגת התמכרות חדשה.", "עוד קצת ואתה רשמית עמוק יותר."],
+      "next-world": ["פתח את העולם הבא. כן, יש עוד.", "הבא את הרקע לשלב הבא.", "עוד עולם מחכה להחלטות שלך."]
+    };
+
+    function pickMissionText(id, fallback, target) {
+      const variants = id.startsWith("clicks-") ? missionTextVariants.clicks : missionTextVariants[id];
+
+      if (!variants || !variants.length) {
+        return fallback;
+      }
+
+      const variant = variants[Math.floor(Math.random() * variants.length)];
+
+      return typeof variant === "function" ? variant(target) : variant;
+    }
+
+    function createMission() {
+      const possibleMissions = [];
+      const clickTargets = count < 80 ? [15, 25] : [15, 25, 40];
+
+      clickTargets.forEach((target) => {
+        const id = `clicks-${target}`;
+        possibleMissions.push({ id, type: "clicks", text: pickMissionText(id, `לחץ עוד ${target} פעמים`, target), target, progress: 0, weight: target === 40 ? 2 : 5 });
+      });
+
+      possibleMissions.push(
+        { id: "pop-any-3", type: "popAny", text: pickMissionText("pop-any-3", "פוצץ 3 בועות", 3), target: 3, progress: 0, weight: 4 },
+        { id: "pop-any-5", type: "popAny", text: pickMissionText("pop-any-5", "פוצץ 5 בועות", 5), target: 5, progress: 0, weight: 3 },
+        { id: "pop-purple-3", type: "popColor", color: "purple", text: pickMissionText("pop-purple-3", "פוצץ 3 בועות סגלגלות", 3), target: 3, progress: 0, weight: 2 },
+        { id: "pop-blue-3", type: "popColor", color: "blue", text: pickMissionText("pop-blue-3", "פוצץ 3 בועות כחלחלות", 3), target: 3, progress: 0, weight: 2 },
+        { id: "pop-pink-3", type: "popColor", color: "pink", text: pickMissionText("pop-pink-3", "פוצץ 3 בועות ורדרדות", 3), target: 3, progress: 0, weight: 2 },
+        { id: "pop-large-1", type: "popLarge", text: pickMissionText("pop-large-1", "פוצץ בועה גדולה אחת", 1), target: 1, progress: 0, weight: 2 },
+        { id: "pop-large-2", type: "popLarge", text: pickMissionText("pop-large-2", "פוצץ 2 בועות גדולות", 2), target: 2, progress: 0, weight: 1 },
+        { id: "gold-1", type: "gold", text: pickMissionText("gold-1", "תפוס בועת זהב אחת", 1), target: 1, progress: 0, weight: 1 },
+        { id: "question-1", type: "question", text: pickMissionText("question-1", "מצא ופוצץ בועת מסתורין אחת", 1), target: 1, progress: 0, weight: 1 }
+      );
+
+      if (getNextStageDistance() <= 60) {
+        possibleMissions.push({ id: "next-stage", type: "nextStage", text: pickMissionText("next-stage", "הגע לדרגה הבאה", 1), target: 1, progress: 0, weight: 2 });
+      }
+
+      if (getNextWorldDistance() <= 50) {
+        possibleMissions.push({ id: "next-world", type: "nextWorld", text: pickMissionText("next-world", "פתח את העולם הבא", 1), target: 1, progress: 0, weight: 2 });
+      }
+
+      const filtered = possibleMissions.filter((mission) => mission.id !== lastMissionId);
+      const pool = filtered.length ? filtered : possibleMissions;
+      const totalWeight = pool.reduce((sum, mission) => sum + mission.weight, 0);
+      let roll = Math.random() * totalWeight;
+
+      for (const mission of pool) {
+        roll -= mission.weight;
+
+        if (roll <= 0) {
+          lastMissionId = mission.id;
+          return { ...mission };
+        }
+      }
+
+      return { ...pool[0] };
+    }
+
+    function renderMission() {
+      if (!activeMission) {
+        return;
+      }
+
+      const progress = Math.min(activeMission.progress, activeMission.target);
+      const percent = (progress / activeMission.target) * 100;
+
+      missionText.textContent = activeMission.text;
+      missionProgressText.textContent = `${progress}/${activeMission.target}`;
+      missionProgressFill.style.width = `${percent}%`;
+      missionDoneCount.textContent = `משימות הושלמו: ${completedMissions}`;
+    }
+
+    function startNewMission(forceFirst = false) {
+      activeMission = forceFirst ? { id: "clicks-15", type: "clicks", text: pickMissionText("clicks-15", "לחץ עוד 15 פעמים", 15), target: 15, progress: 0 } : createMission();
+      renderMission();
+
+      if (activeMission.type === "gold") {
+        preferredSpecialType = "gold";
+        nextSpecialBubbleAt = performance.now() + randomBetween(8000, 15000);
+      } else if (activeMission.type === "question") {
+        preferredSpecialType = "question";
+        nextSpecialBubbleAt = performance.now() + randomBetween(8000, 15000);
+      }
+    }
+
+    function completeMission() {
+      completedMissions += 1;
+      missionPanel.classList.remove("complete");
+      void missionPanel.offsetWidth;
+      missionPanel.classList.add("complete");
+      temporaryEventActiveUntil = performance.now() + 1500;
+      addBubbleConfetti(canvasWidth / 2, canvasHeight / 2, 18);
+      showToast(pickMissionToast(), 4600);
+      updateAddictionMeter(true);
+      playMilestoneSound();
+      activeMission = null;
+      missionDoneCount.textContent = `משימות הושלמו: ${completedMissions}`;
+
+      missionSwitchTimer = window.setTimeout(() => {
+        missionSwitchTimer = null;
+        startNewMission();
+      }, 900);
+    }
+
+    function advanceMission(type, amount = 1, details = {}) {
+      if (!activeMission || activeMission.type !== type) {
+        return;
+      }
+
+      if (type === "popColor" && activeMission.color !== details.color) {
+        return;
+      }
+
+      activeMission.progress = Math.min(activeMission.target, activeMission.progress + amount);
+      renderMission();
+
+      if (activeMission.progress >= activeMission.target) {
+        completeMission();
+      }
+    }
+
+    function getCurrentStageIndex() {
+      for (let index = addictionStages.length - 1; index >= 0; index -= 1) {
+        if (count >= addictionStages[index].min) {
+          return index;
+        }
+      }
+
+      return 0;
+    }
+
+    function pickBoostMessage(stageIndex) {
+      const messages = addictionStages[stageIndex].messages;
+
+      if (!messages.length) {
+        return "";
+      }
+
+      if (!usedMessagesByStage.has(stageIndex) || usedMessagesByStage.get(stageIndex).size >= messages.length) {
+        usedMessagesByStage.set(stageIndex, new Set());
+      }
+
+      const usedMessages = usedMessagesByStage.get(stageIndex);
+      const availableMessages = messages.filter((message) => !usedMessages.has(message) && message !== lastBoostMessage);
+      const fallbackMessages = messages.filter((message) => message !== lastBoostMessage);
+      const pool = availableMessages.length ? availableMessages : fallbackMessages.length ? fallbackMessages : messages;
+      const selectedMessage = pool[Math.floor(Math.random() * pool.length)];
+
+      usedMessages.add(selectedMessage);
+      lastBoostMessage = selectedMessage;
+
+      return selectedMessage;
+    }
+
+    function showMessage(text, shouldFlash = true) {
+      currentMessage = text;
+      messageElement.textContent = text;
+      messageElement.classList.remove("flash");
+
+      if (shouldFlash && text) {
+        void messageElement.offsetWidth;
+        messageElement.classList.add("flash");
+      }
+    }
+
+    function pulseAddictionMeter() {
+      addictionMeter.classList.remove("glow");
+      void addictionMeter.offsetWidth;
+      addictionMeter.classList.add("glow");
+    }
+
+    const progressNoteTemplates = [
+      "עוד X לחיצות ואתה רשמית עמוק יותר בסיפור.",
+      "רק X לחיצות מפרידות בינך לבין החלטה מפוקפקת חדשה.",
+      "עוד X. הכפתור כבר מרגיש את זה.",
+      "X לחיצות לשלב הבא. לא שזה בריא, אבל זה מתקדם.",
+      "עוד X לחיצות והמערכת תיאלץ לעדכן את ההגדרה שלך.",
+      "X לחיצות. קטן עליך, מדאיג בשבילנו.",
+      "עוד X עד שהכפתור יתחיל לקרוא לזה קשר רציני.",
+      "X לחיצות לשלב הבא. ההיגיון ביקש לא להיות מעורב.",
+      "עוד X. אתה כמעט שם, איפה ש'שם' לא אמור להיות.",
+      "X לחיצות והדרגה הבאה נפתחת. משום מה זה מרגש.",
+      "עוד X לחיצות. המד לא שופט, הוא רק מתעד.",
+      "X לחיצות עד לשלב הבא של ההתמסרות.",
+      "עוד X והכפתור מוסיף אותך לאנשי קשר מועדפים.",
+      "X לחיצות. זה כבר כמעט הישג, בערך.",
+      "עוד X. אם הגעת עד כאן, ברור שתמשיך."
+    ];
+    const finalStageNotes = [
+      "אין שלב הבא. יש רק את הכפתור.",
+      "הגעת לסוף הסולם. עכשיו אתה מטפס על הקיר.",
+      "המערכת נגמרה לפניך.",
+      "אין יעד נוסף. וזה איכשהו לא עוצר אותך.",
+      "הכפתור כבר לא מבטיח כלום. אתה עדיין כאן.",
+      "השלבים הסתיימו. האגדה ממשיכה.",
+      "אין יותר דרגות. רק תיעוד היסטורי.",
+      "מכאן והלאה זה בינך לבין האצבע."
+    ];
+
+    function formatProgressNote(clicksLeft, forceNew = false) {
+      if (forceNew || lastProgressNoteRefreshCount < 0 || Math.abs(count - lastProgressNoteRefreshCount) >= 12) {
+        progressNoteVariantIndex = Math.floor(Math.random() * progressNoteTemplates.length);
+        lastProgressNoteRefreshCount = count;
+      }
+
+      return progressNoteTemplates[progressNoteVariantIndex].replace("X", clicksLeft);
+    }
+
+    function pickFinalStageNote(forceNew = false) {
+      if (forceNew || lastProgressNoteRefreshCount < 0 || Math.abs(count - lastProgressNoteRefreshCount) >= 18) {
+        progressNoteVariantIndex = Math.floor(Math.random() * finalStageNotes.length);
+        lastProgressNoteRefreshCount = count;
+      }
+
+      return finalStageNotes[progressNoteVariantIndex];
+    }
+
+    function updateAddictionMeter(shouldPulse = false) {
+      const stage = addictionStages[currentStageIndex];
+
+      addictionLabel.textContent = `דרגת התמכרות: ${stage.name}`;
+
+      if (stage.next === null) {
+        progressFill.style.width = "100%";
+        progressNote.textContent = pickFinalStageNote(shouldPulse);
+      } else {
+        const clicksIntoStage = count - stage.min;
+        const stageLength = stage.next - stage.min;
+        const progress = Math.max(0, Math.min(100, (clicksIntoStage / stageLength) * 100));
+        const clicksLeft = stage.next - count;
+
+        progressFill.style.width = `${progress}%`;
+        progressNote.textContent = formatProgressNote(clicksLeft, shouldPulse);
+      }
+
+      if (shouldPulse) {
+        pulseAddictionMeter();
+      }
+    }
+
+    function popCount() {
+      countElement.classList.remove("pop");
+      void countElement.offsetWidth;
+      countElement.classList.add("pop");
+    }
+
+    function popCountStrong(className = "strong-pop") {
+      countElement.classList.remove("pop", "strong-pop", "celebrate-pop");
+      void countElement.offsetWidth;
+      countElement.classList.add(className);
+    }
+
+    function floatNearCount(text, variant = "soft") {
+      const rect = countElement.getBoundingClientRect();
+
+      showFloatingText(text, rect.left + rect.width * 0.2, rect.top + rect.height * 0.35, variant);
+    }
+
+    function addSparklesNearCount(amount = 8) {
+      const rect = countElement.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      for (let index = 0; index < amount; index += 1) {
+        addDecorativeBubble(centerX + randomBetween(-34, 34), centerY + randomBetween(-20, 24), {
+          radius: randomBetween(2.5, 5.5),
+          life: randomBetween(0.55, 0.9),
+          hue: randomBetween(190, 310)
+        });
+      }
+    }
+
+    function playStreakSound() {
+      playTone({ frequency: 620, duration: 0.06, type: "sine", volume: 0.055 });
+      playTone({ frequency: 820, start: 0.055, duration: 0.07, type: "triangle", volume: 0.045 });
+    }
+
+    function positionComboBadge(comboCount) {
+      const rect = countElement.getBoundingClientRect();
+
+      comboBadge.textContent = comboCount >= 10 ? `Combo x${comboCount}` : "רצף לחיצות!";
+      comboBadge.style.left = `${rect.left + rect.width / 2}px`;
+      comboBadge.style.top = `${rect.top - 10}px`;
+      comboBadge.classList.add("visible");
+    }
+
+    function clearStreak() {
+      streakActive = false;
+      streakTurboShown = false;
+      streakClicks.length = 0;
+      comboBadge.classList.remove("visible");
+    }
+
+    function trackStreak() {
+      const now = performance.now();
+
+      streakClicks.push(now);
+
+      while (streakClicks.length && now - streakClicks[0] > 1000) {
+        streakClicks.shift();
+      }
+
+      if (streakClicks.length >= 10) {
+        if (!streakActive) {
+          streakActive = true;
+          playStreakSound();
+          addSparklesNearCount(7);
+        }
+
+        positionComboBadge(streakClicks.length);
+
+        if (streakClicks.length >= 25 && !streakTurboShown) {
+          streakTurboShown = true;
+          showToast("האצבע נכנסה למצב טורבו.", 3800);
+          playMilestoneSound();
+          addSparklesNearCount(12);
+        }
+      }
+
+      if (streakTimer) {
+        window.clearTimeout(streakTimer);
+      }
+
+      streakTimer = window.setTimeout(clearStreak, 1200);
+    }
+
+    function addRipple(event) {
+      const ripple = document.createElement("span");
+      const rect = clickButton.getBoundingClientRect();
+
+      ripple.className = "ripple";
+      ripple.style.left = `${event.clientX - rect.left}px`;
+      ripple.style.top = `${event.clientY - rect.top}px`;
+      clickButton.appendChild(ripple);
+
+      ripple.addEventListener("animationend", () => {
+        ripple.remove();
+      });
+    }
+
+    function readSoundPreference() {
+      try {
+        return localStorage.getItem("soundMuted") === "true";
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function saveSoundPreference() {
+      try {
+        localStorage.setItem("soundMuted", soundMuted ? "true" : "false");
+      } catch (error) {
+        return;
+      }
+    }
+
+    function updateSoundButton() {
+      soundToggleButton.textContent = soundMuted ? "🔇" : "🔊";
+      soundToggleButton.setAttribute("aria-label", soundMuted ? "הפעל סאונד" : "השתק סאונד");
+    }
+
+    function ensureAudioContext() {
+      if (!audioContext) {
+        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContextConstructor) {
+          return null;
+        }
+
+        audioContext = new AudioContextConstructor();
+        const compressor = audioContext.createDynamicsCompressor();
+
+        compressor.threshold.value = -24;
+        compressor.knee.value = 18;
+        compressor.ratio.value = 5;
+        compressor.attack.value = 0.004;
+        compressor.release.value = 0.16;
+
+        masterGain = audioContext.createGain();
+        masterGain.gain.value = 0.16;
+        masterGain.connect(compressor);
+        compressor.connect(audioContext.destination);
+      }
+
+      if (audioContext.state === "suspended") {
+        audioContext.resume();
+      }
+
+      return audioContext;
+    }
+
+    function playTone({ frequency, endFrequency, start = 0, duration = 0.08, type = "sine", volume = 0.18 }) {
+      if (soundMuted) {
+        return;
+      }
+
+      const context = ensureAudioContext();
+
+      if (!context || !masterGain) {
+        return;
+      }
+
+      const time = context.currentTime + start;
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, time);
+
+      if (endFrequency) {
+        oscillator.frequency.exponentialRampToValueAtTime(endFrequency, time + duration);
+      }
+
+      gain.gain.setValueAtTime(0.0001, time);
+      gain.gain.exponentialRampToValueAtTime(volume, time + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+      oscillator.connect(gain);
+      gain.connect(masterGain);
+      oscillator.start(time);
+      oscillator.stop(time + duration + 0.02);
+    }
+
+    function playNoiseBurst(start = 0, duration = 0.055, volume = 0.055) {
+      if (soundMuted) {
+        return;
+      }
+
+      const context = ensureAudioContext();
+
+      if (!context || !masterGain) {
+        return;
+      }
+
+      const sampleCount = Math.floor(context.sampleRate * duration);
+      const buffer = context.createBuffer(1, sampleCount, context.sampleRate);
+      const data = buffer.getChannelData(0);
+
+      for (let index = 0; index < sampleCount; index += 1) {
+        data[index] = (Math.random() * 2 - 1) * (1 - index / sampleCount);
+      }
+
+      const time = context.currentTime + start;
+      const source = context.createBufferSource();
+      const filter = context.createBiquadFilter();
+      const gain = context.createGain();
+
+      filter.type = "highpass";
+      filter.frequency.value = 900;
+      gain.gain.setValueAtTime(volume, time);
+      gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+      source.buffer = buffer;
+      source.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterGain);
+      source.start(time);
+    }
+
+    function playClickSound() {
+      const now = performance.now();
+
+      if (now - lastClickSoundAt < 32) {
+        return;
+      }
+
+      lastClickSoundAt = now;
+      playTone({ frequency: 330, endFrequency: 520, duration: 0.055, type: "sine", volume: 0.11 });
+      playTone({ frequency: 760, endFrequency: 520, start: 0.012, duration: 0.045, type: "triangle", volume: 0.035 });
+    }
+
+    function playBubbleSound() {
+      playNoiseBurst(0, 0.06, 0.045);
+      playTone({ frequency: 680, endFrequency: 360, start: 0.004, duration: 0.07, type: "sine", volume: 0.055 });
+    }
+
+    function playMilestoneSound() {
+      playTone({ frequency: 392, duration: 0.08, start: 0, type: "sine", volume: 0.075 });
+      playTone({ frequency: 494, duration: 0.09, start: 0.065, type: "sine", volume: 0.07 });
+      playTone({ frequency: 659, duration: 0.11, start: 0.13, type: "triangle", volume: 0.06 });
+    }
+
+    function playResetSound() {
+      playTone({ frequency: 460, endFrequency: 260, duration: 0.12, type: "sine", volume: 0.075 });
+    }
+
+    function updateStatus(previousCount = count) {
+      const nextStageIndex = getCurrentStageIndex();
+      const stageChanged = nextStageIndex !== currentStageIndex;
+      const crossedMilestone = count > 0 && Math.floor(count / 20) > Math.floor(previousCount / 20);
+      const crossedThousand = count > 0 && Math.floor(count / 1000) > Math.floor(previousCount / 1000);
+
+      currentStageIndex = nextStageIndex;
+      updateAddictionMeter(stageChanged);
+      const worldChanged = updateWorld();
+
+      if (stageChanged) {
+        advanceMission("nextStage");
+      }
+
+      if (worldChanged) {
+        advanceMission("nextWorld");
+      }
+
+      if (crossedThousand) {
+        card.classList.remove("excited");
+        card.classList.add("legendary");
+        showMessage("1000 לחיצות! האולם קם על הרגליים. יאיר, הפכת קליק קטן לרגע היסטורי.");
+        playMilestoneSound();
+      } else if (crossedMilestone) {
+        card.classList.remove("legendary");
+        card.classList.add("excited");
+        showMessage(pickBoostMessage(currentStageIndex));
+        playMilestoneSound();
+      }
+
+      return { stageChanged, worldChanged, crossedMilestone, crossedThousand };
+    }
+
+    function addClicks(amount, options = {}) {
+      const previousCount = count;
+
+      count += amount;
+      countElement.textContent = count;
+      const status = updateStatus(previousCount);
+      popCountStrong(status.worldChanged ? "celebrate-pop" : amount > 1 || status.crossedMilestone || status.crossedThousand ? "strong-pop" : "pop");
+      floatNearCount(`+${amount}`, amount > 1 ? "gold" : "soft");
+
+      if (status.worldChanged) {
+        addSparklesNearCount(12);
+      } else if (status.crossedMilestone || status.crossedThousand) {
+        addSparklesNearCount(7);
+      }
+
+      advanceMission("clicks", amount);
+
+      if (options.floatText) {
+        showFloatingText(options.floatText, options.x, options.y, "gold");
+      }
+
+      checkRandomEvent(previousCount, status);
+    }
+
+    clickButton.addEventListener("click", (event) => {
+      ensureAudioContext();
+      addRipple(event);
+      playClickSound();
+      trackStreak();
+      addClicks(1);
+    });
+
+    resetButton.addEventListener("click", () => {
+      ensureAudioContext();
+      count = 0;
+      countElement.textContent = count;
+      currentMessage = "";
+      lastBoostMessage = "";
+      currentStageIndex = 0;
+      currentWorldIndex = 0;
+      completedMissions = 0;
+      lastMissionId = "";
+      activeMission = null;
+      preferredSpecialType = null;
+      temporaryEventActiveUntil = 0;
+      temporaryEffects.freezeUntil = 0;
+      temporaryEffects.speedUntil = 0;
+      temporaryEffects.glowUntil = 0;
+      temporaryEffects.attractUntil = 0;
+      stopGoldRush();
+      clearStreak();
+      stopButtonEvade();
+      clickButton.textContent = originalClickText;
+      titleElement.textContent = originalTitle;
+      clickButton.classList.remove("dodge", "attention-glow");
+      resetButton.classList.remove("wiggle");
+      countElement.classList.remove("wiggle");
+      messageElement.classList.remove("emphasis");
+      scheduleNextRandomEvent();
+
+      if (pendingRandomEventTimer) {
+        window.clearTimeout(pendingRandomEventTimer);
+        pendingRandomEventTimer = null;
+      }
+
+      if (missionSwitchTimer) {
+        window.clearTimeout(missionSwitchTimer);
+        missionSwitchTimer = null;
+      }
+
+      usedMessagesByStage.clear();
+      card.classList.remove("excited", "legendary");
+      worlds.forEach((world) => {
+        if (world.className) {
+          document.body.classList.remove(world.className);
+        }
+      });
+      showMessage("", false);
+      updateAddictionMeter();
+      startNewMission(true);
+      playResetSound();
+    });
+
+    soundToggleButton.addEventListener("click", () => {
+      soundMuted = !soundMuted;
+      saveSoundPreference();
+      updateSoundButton();
+
+      if (!soundMuted) {
+        ensureAudioContext();
+        playTone({ frequency: 520, endFrequency: 680, duration: 0.08, type: "sine", volume: 0.06 });
+      }
+    });
+
+    const bubbleContext = bubbleCanvas.getContext("2d");
+    const bubbleCount = 20;
+    const bubbles = [];
+    const bubblePalettes = [
+      { type: "purple", edge: "rgba(157, 127, 238, 0.42)", glow: "rgba(187, 162, 255, 0.16)" },
+      { type: "pink", edge: "rgba(236, 113, 142, 0.36)", glow: "rgba(255, 171, 190, 0.14)" },
+      { type: "blue", edge: "rgba(92, 164, 238, 0.38)", glow: "rgba(142, 203, 255, 0.15)" }
+    ];
+    const bubbleSizes = [18, 23, 29];
+    const decorativeParticles = [];
+    const temporaryEffects = {
+      freezeUntil: 0,
+      speedUntil: 0,
+      glowUntil: 0,
+      attractUntil: 0
+    };
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+    let lastFrameTime = performance.now();
+    let nextSpecialBubbleAt = performance.now() + randomBetween(8000, 12000);
+
+    function randomBetween(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function resizeBubbleCanvas() {
+      const pixelRatio = window.devicePixelRatio || 1;
+
+      canvasWidth = window.innerWidth;
+      canvasHeight = window.innerHeight;
+      bubbleCanvas.width = canvasWidth * pixelRatio;
+      bubbleCanvas.height = canvasHeight * pixelRatio;
+      bubbleCanvas.style.width = `${canvasWidth}px`;
+      bubbleCanvas.style.height = `${canvasHeight}px`;
+      bubbleContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    }
+
+    function createBubble() {
+      const radius = bubbleSizes[Math.floor(Math.random() * bubbleSizes.length)];
+      const speed = randomBetween(10, 26);
+      const angle = randomBetween(0, Math.PI * 2);
+
+      return {
+        x: randomBetween(radius, Math.max(radius, canvasWidth - radius)),
+        y: randomBetween(radius, Math.max(radius, canvasHeight - radius)),
+        radius,
+        velocityX: Math.cos(angle) * speed,
+        velocityY: Math.sin(angle) * speed,
+        palette: bubblePalettes[Math.floor(Math.random() * bubblePalettes.length)],
+        specialType: null,
+        bornAt: performance.now(),
+        vanishAt: Infinity,
+        baseRadius: radius,
+        popping: false,
+        popProgress: 0,
+        respawnAt: 0
+      };
+    }
+
+    function resetBubble(bubble) {
+      Object.assign(bubble, createBubble());
+    }
+
+    function hasSpecialBubble() {
+      return bubbles.some((bubble) => bubble.specialType && !bubble.popping);
+    }
+
+    function scheduleNextSpecialBubble(isFirst = false) {
+      nextSpecialBubbleAt = performance.now() + (isFirst ? randomBetween(8000, 12000) : randomBetween(15000, 30000));
+    }
+
+    function pickSpecialType() {
+      if (preferredSpecialType) {
+        const type = preferredSpecialType;
+
+        preferredSpecialType = null;
+        return type;
+      }
+
+      const roll = Math.random();
+
+      if (roll < 0.58) {
+        return "gold";
+      }
+
+      if (roll < 0.88) {
+        return "question";
+      }
+
+      return "giant";
+    }
+
+    function makeSpecialBubble(type) {
+      const bubble = createBubble();
+
+      bubble.specialType = type;
+      bubble.bornAt = performance.now();
+      bubble.baseRadius = type === "giant" ? 42 : type === "gold" ? 30 : 28;
+      bubble.radius = bubble.baseRadius;
+      bubble.vanishAt = type === "giant" ? bubble.bornAt + 6000 : type === "gold" ? bubble.bornAt + 12000 : Infinity;
+
+      if (type === "gold") {
+        bubble.palette = { edge: "rgba(238, 184, 59, 0.72)", glow: "rgba(255, 218, 113, 0.24)" };
+      } else if (type === "question") {
+        bubble.palette = { edge: "rgba(126, 125, 237, 0.58)", glow: "rgba(161, 170, 255, 0.2)" };
+      } else {
+        bubble.palette = { edge: "rgba(133, 213, 255, 0.58)", glow: "rgba(255, 189, 235, 0.18)" };
+      }
+
+      return bubble;
+    }
+
+    function startGoldRush() {
+      if (goldRushActive) {
+        return;
+      }
+
+      goldRushActive = true;
+      goldRushToastShown = true;
+      document.body.classList.add("gold-rush");
+      showToast("בועת זהב הופיעה. עכשיו כולם בלחץ.", 3800);
+    }
+
+    function stopGoldRush() {
+      if (!goldRushActive) {
+        return;
+      }
+
+      goldRushActive = false;
+      document.body.classList.remove("gold-rush");
+    }
+
+    function spawnSpecialBubbleIfNeeded() {
+      if (performance.now() < nextSpecialBubbleAt || hasSpecialBubble()) {
+        return;
+      }
+
+      const candidates = bubbles.filter((bubble) => !bubble.popping && !bubble.specialType);
+
+      if (!candidates.length) {
+        scheduleNextSpecialBubble();
+        return;
+      }
+
+      const specialType = pickSpecialType();
+      Object.assign(candidates[Math.floor(Math.random() * candidates.length)], makeSpecialBubble(specialType));
+
+      if (specialType === "gold") {
+        startGoldRush();
+      }
+    }
+
+    function addDecorativeBubble(x, y, options = {}) {
+      decorativeParticles.push({
+        x,
+        y,
+        velocityX: randomBetween(-34, 34),
+        velocityY: randomBetween(-74, -20),
+        radius: options.radius || randomBetween(4, 9),
+        life: options.life || randomBetween(0.7, 1.15),
+        age: 0,
+        hue: options.hue || randomBetween(185, 325)
+      });
+    }
+
+    function addBubbleConfetti(x, y, amount = 22) {
+      for (let index = 0; index < amount; index += 1) {
+        addDecorativeBubble(x, y, { radius: randomBetween(3, 8), life: randomBetween(0.7, 1.25) });
+      }
+    }
+
+    function addBubbleRain() {
+      for (let index = 0; index < 34; index += 1) {
+        decorativeParticles.push({
+          x: randomBetween(20, canvasWidth - 20),
+          y: randomBetween(-40, 80),
+          velocityX: randomBetween(-8, 8),
+          velocityY: randomBetween(24, 58),
+          radius: randomBetween(3, 6),
+          life: randomBetween(1.2, 2),
+          age: 0,
+          hue: randomBetween(190, 310)
+        });
+      }
+    }
+
+    function updateDecorativeParticles(deltaSeconds) {
+      for (let index = decorativeParticles.length - 1; index >= 0; index -= 1) {
+        const particle = decorativeParticles[index];
+
+        particle.age += deltaSeconds;
+        particle.x += particle.velocityX * deltaSeconds;
+        particle.y += particle.velocityY * deltaSeconds;
+
+        if (particle.age >= particle.life) {
+          decorativeParticles.splice(index, 1);
+        }
+      }
+    }
+
+    function drawDecorativeParticles() {
+      decorativeParticles.forEach((particle) => {
+        const alpha = Math.max(0, 1 - particle.age / particle.life);
+
+        bubbleContext.save();
+        bubbleContext.globalAlpha = alpha * 0.75;
+        bubbleContext.beginPath();
+        bubbleContext.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        bubbleContext.fillStyle = `hsla(${particle.hue}, 90%, 78%, 0.2)`;
+        bubbleContext.fill();
+        bubbleContext.strokeStyle = `hsla(${particle.hue}, 90%, 78%, 0.46)`;
+        bubbleContext.lineWidth = 1;
+        bubbleContext.stroke();
+        bubbleContext.restore();
+      });
+    }
+
+    function drawBubble(bubble) {
+      const alpha = bubble.popping ? Math.max(0, 1 - bubble.popProgress) : 1;
+      const radius = bubble.popping ? bubble.radius * (1 + bubble.popProgress * 0.55) : bubble.radius;
+      const worldGlow = 1 + currentWorldIndex * 0.08;
+      const extraGlow = (performance.now() < temporaryEffects.glowUntil ? 1.45 : 1) * (goldRushActive ? 1.35 : 1);
+      const gradient = bubbleContext.createRadialGradient(
+        bubble.x - radius * 0.35,
+        bubble.y - radius * 0.4,
+        radius * 0.1,
+        bubble.x,
+        bubble.y,
+        radius
+      );
+
+      gradient.addColorStop(0, `rgba(255, 255, 255, ${0.42 * alpha})`);
+      gradient.addColorStop(0.42, bubble.palette.glow);
+      gradient.addColorStop(1, `rgba(255, 255, 255, ${0.06 * alpha})`);
+
+      bubbleContext.save();
+      bubbleContext.globalAlpha = alpha;
+      bubbleContext.shadowBlur = bubble.specialType ? 18 : 6 * worldGlow * extraGlow;
+      bubbleContext.shadowColor = bubble.palette.edge;
+      bubbleContext.beginPath();
+      bubbleContext.arc(bubble.x, bubble.y, radius, 0, Math.PI * 2);
+      bubbleContext.fillStyle = gradient;
+      bubbleContext.fill();
+      bubbleContext.strokeStyle = bubble.palette.edge;
+      bubbleContext.lineWidth = 1.3;
+      bubbleContext.stroke();
+
+      bubbleContext.beginPath();
+      bubbleContext.arc(bubble.x - radius * 0.32, bubble.y - radius * 0.36, radius * 0.18, 0, Math.PI * 2);
+      bubbleContext.fillStyle = `rgba(255, 255, 255, ${0.62 * alpha})`;
+      bubbleContext.fill();
+
+      if (bubble.specialType) {
+        bubbleContext.shadowBlur = 0;
+        bubbleContext.font = `${Math.max(15, radius * 0.56)}px "Segoe UI", Tahoma, sans-serif`;
+        bubbleContext.textAlign = "center";
+        bubbleContext.textBaseline = "middle";
+        bubbleContext.fillStyle = bubble.specialType === "gold" ? `rgba(151, 100, 0, ${0.82 * alpha})` : `rgba(72, 72, 140, ${0.76 * alpha})`;
+        bubbleContext.fillText(bubble.specialType === "gold" ? "+5" : bubble.specialType === "question" ? "?" : "", bubble.x, bubble.y + 1);
+      }
+
+      bubbleContext.restore();
+    }
+
+    function moveBubble(bubble, deltaSeconds) {
+      const now = performance.now();
+
+      if (bubble.popping) {
+        bubble.popProgress += deltaSeconds * 4.5;
+
+        if (bubble.popProgress >= 1 && performance.now() >= bubble.respawnAt) {
+          resetBubble(bubble);
+        }
+
+        return;
+      }
+
+      if (bubble.specialType === "giant") {
+        const ageProgress = Math.min(1, (now - bubble.bornAt) / 6000);
+
+        bubble.radius = bubble.baseRadius + ageProgress * 34;
+
+        if (now >= bubble.vanishAt) {
+          resetBubble(bubble);
+          scheduleNextSpecialBubble();
+          return;
+        }
+      }
+
+      if (bubble.specialType === "gold" && now >= bubble.vanishAt) {
+        resetBubble(bubble);
+        stopGoldRush();
+        scheduleNextSpecialBubble();
+        return;
+      }
+
+      if (now < temporaryEffects.freezeUntil) {
+        return;
+      }
+
+      let speedMultiplier = now < temporaryEffects.speedUntil ? 1.85 : 1;
+
+      if (goldRushActive && !bubble.specialType) {
+        speedMultiplier *= 2.25;
+        bubble.velocityX += randomBetween(-10, 10) * deltaSeconds;
+        bubble.velocityY += randomBetween(-10, 10) * deltaSeconds;
+      }
+
+      if (now < temporaryEffects.attractUntil) {
+        const rect = clickButton.getBoundingClientRect();
+        const targetX = rect.left + rect.width / 2;
+        const targetY = rect.top + rect.height / 2;
+        const distanceX = targetX - bubble.x;
+        const distanceY = targetY - bubble.y;
+        const distance = Math.max(1, Math.hypot(distanceX, distanceY));
+
+        bubble.velocityX += (distanceX / distance) * 18 * deltaSeconds;
+        bubble.velocityY += (distanceY / distance) * 18 * deltaSeconds;
+      }
+
+      bubble.x += bubble.velocityX * deltaSeconds * speedMultiplier;
+      bubble.y += bubble.velocityY * deltaSeconds * speedMultiplier;
+
+      if (bubble.x < bubble.radius || bubble.x > canvasWidth - bubble.radius) {
+        bubble.x = Math.min(Math.max(bubble.x, bubble.radius), canvasWidth - bubble.radius);
+        bubble.velocityX *= -1;
+      }
+
+      if (bubble.y < bubble.radius || bubble.y > canvasHeight - bubble.radius) {
+        bubble.y = Math.min(Math.max(bubble.y, bubble.radius), canvasHeight - bubble.radius);
+        bubble.velocityY *= -1;
+      }
+    }
+
+    function resolveBubbleCollisions() {
+      for (let firstIndex = 0; firstIndex < bubbles.length; firstIndex += 1) {
+        const first = bubbles[firstIndex];
+
+        if (first.popping) {
+          continue;
+        }
+
+        for (let secondIndex = firstIndex + 1; secondIndex < bubbles.length; secondIndex += 1) {
+          const second = bubbles[secondIndex];
+
+          if (second.popping) {
+            continue;
+          }
+
+          const distanceX = second.x - first.x;
+          const distanceY = second.y - first.y;
+          const distance = Math.hypot(distanceX, distanceY);
+          const minimumDistance = first.radius + second.radius;
+
+          if (distance > 0 && distance < minimumDistance) {
+            const normalX = distanceX / distance;
+            const normalY = distanceY / distance;
+            const overlap = (minimumDistance - distance) / 2;
+            const relativeVelocityX = second.velocityX - first.velocityX;
+            const relativeVelocityY = second.velocityY - first.velocityY;
+            const speed = relativeVelocityX * normalX + relativeVelocityY * normalY;
+
+            first.x -= normalX * overlap;
+            first.y -= normalY * overlap;
+            second.x += normalX * overlap;
+            second.y += normalY * overlap;
+
+            if (speed < 0) {
+              first.velocityX += normalX * speed;
+              first.velocityY += normalY * speed;
+              second.velocityX -= normalX * speed;
+              second.velocityY -= normalY * speed;
+            }
+          }
+        }
+      }
+    }
+
+    function createFakeButton() {
+      const fakeButton = document.createElement("button");
+
+      fakeButton.className = "fake-button";
+      fakeButton.type = "button";
+      fakeButton.textContent = "אל תלחץ כאן";
+      clickButton.insertAdjacentElement("afterend", fakeButton);
+
+      const removeFakeButton = () => {
+        fakeButton.remove();
+      };
+
+      fakeButton.addEventListener("click", () => {
+        showToast("ברור שלחצת.", 3600);
+        removeFakeButton();
+      });
+      fakeButton.addEventListener("animationend", removeFakeButton);
+    }
+
+    function playEventBlip() {
+      playTone({ frequency: 560, endFrequency: 420, duration: 0.06, type: "triangle", volume: 0.045 });
+    }
+
+    function stopButtonEvade() {
+      buttonEvadeActive = false;
+      clickButton.classList.remove("evading");
+      clickButton.style.removeProperty("--evade-x");
+      clickButton.style.removeProperty("--evade-y");
+
+      if (buttonEvadeTimer) {
+        window.clearTimeout(buttonEvadeTimer);
+        buttonEvadeTimer = null;
+      }
+
+      if (buttonEvadeInterval) {
+        window.clearInterval(buttonEvadeInterval);
+        buttonEvadeInterval = null;
+      }
+    }
+
+    function startButtonEvade() {
+      buttonEvadeActive = true;
+      clickButton.classList.add("evading");
+      clickButton.classList.remove("dodge");
+      void clickButton.offsetWidth;
+      clickButton.classList.add("dodge");
+
+      if (buttonEvadeTimer) {
+        window.clearTimeout(buttonEvadeTimer);
+      }
+
+      if (buttonEvadeInterval) {
+        window.clearInterval(buttonEvadeInterval);
+      }
+
+      buttonEvadeInterval = window.setInterval(() => {
+        clickButton.style.setProperty("--evade-x", `${randomBetween(-46, 46)}px`);
+        clickButton.style.setProperty("--evade-y", `${randomBetween(-18, 18)}px`);
+      }, 420);
+      buttonEvadeTimer = window.setTimeout(stopButtonEvade, randomBetween(3000, 4000));
+    }
+
+    window.addEventListener("pointermove", (event) => {
+      if (!buttonEvadeActive) {
+        return;
+      }
+
+      const rect = clickButton.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distanceX = centerX - event.clientX;
+      const distanceY = centerY - event.clientY;
+      const distance = Math.max(1, Math.hypot(distanceX, distanceY));
+
+      if (distance > 170) {
+        clickButton.style.setProperty("--evade-x", "0px");
+        clickButton.style.setProperty("--evade-y", "0px");
+        return;
+      }
+
+      const force = Math.max(0, 1 - distance / 170);
+      const offset = 45 + force * 25;
+      const x = Math.max(-70, Math.min(70, (distanceX / distance) * offset));
+      const y = Math.max(-36, Math.min(36, (distanceY / distance) * offset * 0.55));
+
+      clickButton.style.setProperty("--evade-x", `${x}px`);
+      clickButton.style.setProperty("--evade-y", `${y}px`);
+    });
+
+    const temporaryEventDefinitions = [
+      {
+        message: "די.",
+        run() {
+          clickButton.textContent = "די.";
+          window.setTimeout(() => {
+            clickButton.textContent = originalClickText;
+          }, 1200);
+        }
+      },
+      {
+        message: "הכפתור באמת ניסה לברוח הפעם.",
+        run() {
+          startButtonEvade();
+        }
+      },
+      {
+        message: "ברור שתלחץ.",
+        run() {
+          createFakeButton();
+        }
+      },
+      {
+        message: "הבועות עצרו רגע כדי לעכל את הבחירות שלך.",
+        run() {
+          temporaryEffects.freezeUntil = performance.now() + 1500;
+        }
+      },
+      {
+        message: "הניסוי הראשון של הכפתור על יאיר",
+        run() {
+          titleElement.textContent = "הניסוי הראשון של הכפתור על יאיר";
+          window.setTimeout(() => {
+            titleElement.textContent = originalTitle;
+          }, 2000);
+        }
+      },
+      {
+        message: "המונה התחיל להבין מה קורה פה.",
+        run() {
+          countElement.classList.remove("wiggle");
+          void countElement.offsetWidth;
+          countElement.classList.add("wiggle");
+        }
+      },
+      {
+        message: "הכפתור נהנה מתשומת הלב יותר מדי.",
+        run() {
+          clickButton.classList.remove("attention-glow");
+          void clickButton.offsetWidth;
+          clickButton.classList.add("attention-glow");
+        }
+      },
+      {
+        message: "אפילו הבועות נשאבו לסיפור הזה.",
+        run() {
+          temporaryEffects.attractUntil = performance.now() + 1800;
+        }
+      },
+      {
+        message: "איפוס? הוא כבר לא מאמין שתעשה את זה.",
+        run() {
+          resetButton.classList.remove("wiggle");
+          void resetButton.offsetWidth;
+          resetButton.classList.add("wiggle");
+        }
+      },
+      {
+        message: "המערכת מבקשת לוודא שקראת את זה.",
+        run() {
+          messageElement.classList.remove("emphasis");
+          void messageElement.offsetWidth;
+          messageElement.classList.add("emphasis");
+        }
+      },
+      {
+        message: "הבהלת אותן. הן יודעות מה קרה לכפתור.",
+        run() {
+          temporaryEffects.speedUntil = performance.now() + 3000;
+        }
+      },
+      {
+        message: "פרס על התמדה חסרת כל הצדקה.",
+        run() {
+          addBubbleRain();
+        }
+      },
+      {
+        message: "המערכת מזהה נוכחות של מקצוען.",
+        run() {
+          temporaryEffects.glowUntil = performance.now() + 2000;
+        }
+      }
+    ];
+
+    function triggerTemporaryEvent(options = {}) {
+      const now = performance.now();
+      const delay = options.delay || 0;
+
+      if (!options.force && now < temporaryEventActiveUntil) {
+        return false;
+      }
+
+      if (delay > 0) {
+        if (pendingRandomEventTimer) {
+          window.clearTimeout(pendingRandomEventTimer);
+        }
+
+        pendingRandomEventTimer = window.setTimeout(() => {
+          pendingRandomEventTimer = null;
+          triggerTemporaryEvent();
+        }, delay);
+        return true;
+      }
+
+      let nextEvent = Math.floor(Math.random() * temporaryEventDefinitions.length);
+
+      if (temporaryEventDefinitions.length > 1) {
+        while (nextEvent === lastQuestionEvent) {
+          nextEvent = Math.floor(Math.random() * temporaryEventDefinitions.length);
+        }
+      }
+
+      lastQuestionEvent = nextEvent;
+      temporaryEventActiveUntil = now + 4600;
+      temporaryEventDefinitions[nextEvent].run();
+      showToast(temporaryEventDefinitions[nextEvent].message, 4300);
+      playEventBlip();
+      return true;
+    }
+
+    function checkRandomEvent(previousCount, status) {
+      if (!nextRandomEventAt || count < nextRandomEventAt || previousCount >= nextRandomEventAt) {
+        return;
+      }
+
+      scheduleNextRandomEvent();
+
+      if (status.stageChanged || status.worldChanged || status.crossedMilestone) {
+        triggerTemporaryEvent({ delay: randomBetween(1000, 2000) });
+        return;
+      }
+
+      triggerTemporaryEvent();
+    }
+
+    function popBubble(bubble, delay = 260) {
+      bubble.popping = true;
+      bubble.popProgress = 0;
+      bubble.respawnAt = performance.now() + delay;
+    }
+
+    function recordBubblePop(bubble) {
+      advanceMission("popAny");
+
+      if (!bubble.specialType) {
+        advanceMission("popColor", 1, { color: bubble.palette.type });
+
+        if (bubble.baseRadius >= 29) {
+          advanceMission("popLarge");
+        }
+      }
+    }
+
+    function handleSpecialBubbleClick(bubble, pointerX, pointerY) {
+      const specialType = bubble.specialType;
+
+      popBubble(bubble, specialType === "giant" ? 420 : 260);
+      playBubbleSound();
+      recordBubblePop(bubble);
+
+      if (specialType === "gold") {
+        stopGoldRush();
+        addClicks(5, { floatText: "+5", x: pointerX, y: pointerY });
+        advanceMission("gold");
+      } else if (specialType === "question") {
+        advanceMission("question");
+        triggerTemporaryEvent();
+      } else if (specialType === "giant") {
+        addBubbleConfetti(pointerX, pointerY, 34);
+        showToast("תפסת את הבועה האגדית. אין לזה ערך, אבל איזה סיפוק.", 4300);
+      }
+
+      scheduleNextSpecialBubble();
+    }
+
+    function animateBubbles(time) {
+      const deltaSeconds = Math.min((time - lastFrameTime) / 1000, 0.033);
+
+      lastFrameTime = time;
+      bubbleContext.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      spawnSpecialBubbleIfNeeded();
+      updateDecorativeParticles(deltaSeconds);
+      bubbles.forEach((bubble) => moveBubble(bubble, deltaSeconds));
+      resolveBubbleCollisions();
+      bubbles.forEach(drawBubble);
+      drawDecorativeParticles();
+
+      requestAnimationFrame(animateBubbles);
+    }
+
+    bubbleCanvas.addEventListener("pointerdown", (event) => {
+      const rect = bubbleCanvas.getBoundingClientRect();
+      const pointerX = event.clientX - rect.left;
+      const pointerY = event.clientY - rect.top;
+
+      for (let index = bubbles.length - 1; index >= 0; index -= 1) {
+        const bubble = bubbles[index];
+
+        if (!bubble.popping && Math.hypot(pointerX - bubble.x, pointerY - bubble.y) <= bubble.radius + 4) {
+          ensureAudioContext();
+
+          if (bubble.specialType) {
+            handleSpecialBubbleClick(bubble, pointerX, pointerY);
+          } else {
+            popBubble(bubble);
+            playBubbleSound();
+            recordBubblePop(bubble);
+          }
+
+          break;
+        }
+      }
+    });
+
+    window.addEventListener("resize", resizeBubbleCanvas);
+
+    resizeBubbleCanvas();
+
+    for (let index = 0; index < bubbleCount; index += 1) {
+      bubbles.push(createBubble());
+    }
+
+    updateAddictionMeter();
+    startNewMission(true);
+    scheduleNextRandomEvent();
+    updateSoundButton();
+    requestAnimationFrame(animateBubbles);
+  </script>
+</body>
+</html>
